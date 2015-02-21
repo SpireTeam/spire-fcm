@@ -1,6 +1,6 @@
 # yodel-gcm
 
-yodel-gcm is a Node.JS library for [**Google Cloud Messaging for Android**](http://developer.android.com/guide/google/gcm/index.html), which replaces Cloud 2 Device Messaging (C2DM).
+yodel-gcm is a Node.JS library for [**Google Cloud Messaging for Android**](http://developer.android.com/guide/google/gcm/index.html) based on node-gcm.
 
 ## Installation
 ```bash
