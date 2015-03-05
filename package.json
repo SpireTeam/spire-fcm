@@ -1,7 +1,7 @@
 {
   "name": "yodel-gcm",
   "description": "Google Cloud Messaging on Node with User Notifications",
-  "version": "0.9.20",
+  "version": "0.9.21",
   "author": "Brian Bowden <brian@spire.me>",
   "contributors": [
     {

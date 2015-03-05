@@ -221,6 +221,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Changelog
 
+**0.9.16-0.9.21**
+ * added the full response body in addition to the error code when an error is returned to a callback during a send or operation
+ * various small tweaks and fixes
+
 **0.9.15**
  * added support for user notifications
  * introduced `OperationRunner` and `Operation` to allow for notification key operations
