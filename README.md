@@ -1,6 +1,6 @@
 # spire-fcm
 
-spire-fcm is a Node.JS library for Firebase Cloud Messaging based on node-gcm.
+spire-fcm is a Node.JS module for Firebase Cloud Messaging based on node-gcm.
 
 ## Installation
 ```bash
