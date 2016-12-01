@@ -1,7 +1,7 @@
 {
-  "name": "yodel-gcm",
-  "description": "Google Cloud Messaging on Node with User Notifications",
-  "version": "0.9.21",
+  "name": "spire-fcm",
+  "description": "Firebase Cloud Messaging on Node with User Notifications",
+  "version": "1.0",
   "author": "Brian Bowden <brian@spire.me>",
   "contributors": [
     {
@@ -104,12 +104,15 @@
   },
   "keywords": [ 
     "google",
+    "firebase",
     "cloud",
+    "messaging",
     "push",
     "notifications",
+    "gcm",
+    "fcm",
     "android",
-    "c2dm",
-    "gcm"
+    "ios"
   ],
   "main": "index",
   "scripts": {
