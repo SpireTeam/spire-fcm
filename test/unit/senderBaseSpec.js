@@ -97,7 +97,6 @@ describe('UNIT SenderBase', function () {
 
     it('should set properties of body with message properties', function () {
       var mess = {
-        delayWhileIdle: true,
         collapseKey: 'Message',
         timeToLive: 100,
         dryRun: true,
@@ -108,7 +107,6 @@ describe('UNIT SenderBase', function () {
       var senderBase = new SenderBase('mykey');
       senderBase.sendBaseNoRetry(mess, testRecipient, function () {});
       var body = JSON.parse(args.options.body);
-      expect(body[Constants.PARAM_DELAY_WHILE_IDLE]).to.equal(mess.delayWhileIdle);
       expect(body[Constants.PARAM_COLLAPSE_KEY]).to.equal(mess.collapseKey);
       expect(body[Constants.PARAM_TIME_TO_LIVE]).to.equal(mess.timeToLive);
       expect(body[Constants.PARAM_DRY_RUN]).to.equal(mess.dryRun);

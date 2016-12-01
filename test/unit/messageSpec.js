@@ -9,10 +9,13 @@ describe('UNIT Message', function () {
     it('should create an empty message with a data object if not passed an object', function () {
       var mess = new Message();
       expect(mess.collapseKey).to.be.undefined;
-      expect(mess.delayWhileIdle).to.be.undefined;
       expect(mess.timeToLive).to.be.undefined;
       expect(mess.dryRun).to.be.undefined;
-      expect(mess.data).to.deep.equal({});
+      expect(mess.priority).to.be.undefined;
+      expect(mess.contentAvailable).to.be.undefined;
+      expect(mess.restrictedPackageName).to.be.undefined;
+      expect(mess.data).to.be.undefined;
+      expect(mess.notification).to.be.undefined;
     });
 
     it('should call new on constructor if user does not', function () {
@@ -24,11 +27,17 @@ describe('UNIT Message', function () {
     it('should create an message with properties passed in', function () {
       var obj = {
         collapseKey: 'Message',
-        delayWhileIdle: true,
         timeToLive: 100,
         dryRun: true,
+        priority: 'normal',
+        contentAvailable: true,
+        restrictedPackageName: 'com.test.app',
         data: {
           score: 98
+        },
+        notification: {
+          title: 'testTitle',
+          body: 'testBody',
         }
       };
       var mess = new Message(obj);
@@ -38,7 +47,6 @@ describe('UNIT Message', function () {
     it('should only set properties passed into constructor', function () {
       var obj = {
         collapseKey: 'Message',
-        delayWhileIdle: true,
         data: {
           score: 98
         }
@@ -46,7 +54,11 @@ describe('UNIT Message', function () {
       var mess = new Message(obj);
       expect(JSON.stringify(mess)).to.equal(JSON.stringify(obj));
       expect(mess.timeToLive).to.be.undefined;
+      expect(mess.priority).to.be.undefined;
+      expect(mess.contentAvailable).to.be.undefined;
+      expect(mess.restrictedPackageName).to.be.undefined;
       expect(mess.dryRun).to.be.undefined;
+      expect(mess.notification).to.be.undefined;
     });
   });
 

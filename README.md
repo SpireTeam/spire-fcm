@@ -21,7 +21,6 @@ var message = new fcm.Message();
 // ... or some given values
 var message = new fcm.Message({
 	collapseKey: 'demo',
-	delayWhileIdle: true,
 	timeToLive: 3,
 	data: {
 		key1: 'message1',
@@ -42,7 +41,6 @@ message.addData({
 
 // Change the message variables
 message.collapseKey = 'demo';
-message.delayWhileIdle = true;
 message.timeToLive = 3;
 message.dryRun = true;
 
