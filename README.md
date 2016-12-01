@@ -1,6 +1,6 @@
 # spire-fcm
 
-spire-fcm is a Node.JS module for Firebase Cloud Messaging based on node-gcm.
+spire-fcm is a Node.JS module for Firebase Cloud Messaging based on yodel-gcm, a fork of node-gcm.
 
 ## Installation
 ```bash
@@ -48,25 +48,25 @@ message.dryRun = true;
 var sender = new fcm.Sender('insert Firebase Messaging Token here');
 
 // Add the registration IDs of the devices you want to send to
-var registrationTokens = [];
-registrationTokens.push('regId1');
-registrationTokens.push('regId2');
+var registrationIds = [];
+registrationIds.push('regId1');
+registrationIds.push('regId2');
 
 // Send the message
 // ... trying only once
-sender.sendNoRetry(message, registrationTokens, function(err, result) {
+sender.sendNoRetry(message, registrationIds, function(err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
 
 // ... or retrying
-sender.send(message, registrationTokens, function (err, result) {
+sender.send(message, registrationIds, function (err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
 
 // ... or retrying a specific number of times (10)
-sender.send(message, registrationTokens, 10, function (err, result) {
+sender.send(message, registrationIds, 10, function (err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
@@ -79,12 +79,12 @@ User notifications were initially introduced at Google I/O 2013 and became avail
 #### Performing Notification Key Operations
 
 ```js
-var fcm = require('yodel-fcm');
+var fcm = require('spire-fcm');
 
 // Create an operation runner for performing notification key operations
 var opRunner = new gcm.OperationRunner(
-  'insert Google project number here', 
-  'insert Google Server API Key here'
+  'insert Sender ID here', 
+  'insert Firebase Messaging Token here'
   );
 
 // Define a 'create' operation for creating a notification key
@@ -127,7 +127,7 @@ var addOperation = new fcm.Operation({
   operationType: 'add',
   notificationKeyName: 'appUser-Chris',
   notificationKey: 'yourlongnotificationkeystring',
-  registrationTokens: ['regId2', 'regId3'],
+  registrationIds: ['regId2', 'regId3'],
   recreateKeyIfMissing: true
 });
 ```
@@ -139,7 +139,7 @@ var addOperation = new fcm.Operation({
   operationType: 'remove',
   notificationKeyName: 'appUser-Chris',
   notificationKey: 'yournotificationkey',
-  registrationTokens: ['regId3']
+  registrationIds: ['regId3']
 });
 ```
 
