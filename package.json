@@ -99,8 +99,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/SpireTeam/yodel-gcm.git",
-    "web": "http://github.com/SpireTeam/yodel-gcm"
+    "url": "http://github.com/SpireTeam/spire-fcm.git",
+    "web": "http://github.com/SpireTeam/spire-fcm"
   },
   "keywords": [ 
     "google",
