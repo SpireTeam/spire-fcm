@@ -1,29 +1,25 @@
-# yodel-gcm
+# spire-fcm
 
-yodel-gcm is a Node.JS library for [**Google Cloud Messaging for Android**](http://developer.android.com/guide/google/gcm/index.html) based on node-gcm.
+spire-fcm is a Node.JS module for Firebase Cloud Messaging based on node-gcm.
 
 ## Installation
 ```bash
-$ npm install yodel-gcm
+$ npm install spire-fcm
 ```
-
-## Requirements
-
-An Android device running 2.2 or newer and an API key as per [GCM getting started guide](http://developer.android.com/guide/google/gcm/gs.html).
 
 ## Usage
 
 ### Standard Push Notifications
 
 ```js
-var gcm = require('yodel-gcm');
+var fcm = require('spire-fcm');
 
 // Create a message
 // ... with default values
-var message = new gcm.Message();
+var message = new fcm.Message();
 
 // ... or some given values
-var message = new gcm.Message({
+var message = new fcm.Message({
 	collapseKey: 'demo',
 	delayWhileIdle: true,
 	timeToLive: 3,
@@ -51,28 +47,28 @@ message.timeToLive = 3;
 message.dryRun = true;
 
 // Set up the sender with you API key
-var sender = new gcm.Sender('insert Google Server API Key here');
+var sender = new fcm.Sender('insert Firebase Messaging Token here');
 
 // Add the registration IDs of the devices you want to send to
-var registrationIds = [];
-registrationIds.push('regId1');
-registrationIds.push('regId2');
+var registrationTokens = [];
+registrationTokens.push('regId1');
+registrationTokens.push('regId2');
 
 // Send the message
 // ... trying only once
-sender.sendNoRetry(message, registrationIds, function(err, result) {
+sender.sendNoRetry(message, registrationTokens, function(err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
 
 // ... or retrying
-sender.send(message, registrationIds, function (err, result) {
+sender.send(message, registrationTokens, function (err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
 
 // ... or retrying a specific number of times (10)
-sender.send(message, registrationIds, 10, function (err, result) {
+sender.send(message, registrationTokens, 10, function (err, result) {
   if(err) console.error(err);
   else    console.log(result);
 });
@@ -85,7 +81,7 @@ User notifications were initially introduced at Google I/O 2013 and became avail
 #### Performing Notification Key Operations
 
 ```js
-var gcm = require('yodel-gcm');
+var fcm = require('yodel-fcm');
 
 // Create an operation runner for performing notification key operations
 var opRunner = new gcm.OperationRunner(
@@ -94,10 +90,10 @@ var opRunner = new gcm.OperationRunner(
   );
 
 // Define a 'create' operation for creating a notification key
-var createOperation = new gcm.Operation({
+var createOperation = new fcm.Operation({
   operationType: 'create',
   notificationKeyName: 'appUser-Chris',
-  registrationIds: ['regId1', 'regId2']
+  registrationTokens: ['regId1', 'regId2']
 });
 
 // Run the 'create' operation
@@ -116,36 +112,36 @@ opRunner.performOperation(createOperation, function(err, result) {
 ```
 #### Operation Types
 
-**Create**: Creates a new notification key with provided registration IDs
+**Create**: Creates a new notification key with provided registration tokens
 ```js
-var createOperation = new gcm.Operation({
+var createOperation = new fcm.Operation({
   operationType: 'create',
   notificationKeyName: 'appUser-Chris',
-  registrationIds: ['regId1', 'regId2']
+  registrationTokens: ['regId1', 'regId2']
 });
 ```
 
-**Add**: Adds new registration IDs to an existing notification key
+**Add**: Adds new registration tokens to an existing notification key
 ```js
 // Set recreateKeyIfMissing to true if you want to automatically retry as a
-// create operation if GCM has deleted your original notification key.
-var addOperation = new gcm.Operation({
+// create operation if FCM has deleted your original notification key.
+var addOperation = new fcm.Operation({
   operationType: 'add',
   notificationKeyName: 'appUser-Chris',
   notificationKey: 'yourlongnotificationkeystring',
-  registrationIds: ['regId2', 'regId3'],
+  registrationTokens: ['regId2', 'regId3'],
   recreateKeyIfMissing: true
 });
 ```
 
-**Remove**: Removes registration IDs from an existing notification key
+**Remove**: Removes registration tokens from an existing notification key
 ```js
-// A notification key will be automatically deleted if all registrationIDs are removed.
-var addOperation = new gcm.Operation({
+// A notification key will be automatically deleted if all registration tokens are removed.
+var addOperation = new fcm.Operation({
   operationType: 'remove',
   notificationKeyName: 'appUser-Chris',
   notificationKey: 'yournotificationkey',
-  registrationIds: ['regId3']
+  registrationTokens: ['regId3']
 });
 ```
 
@@ -153,9 +149,9 @@ var addOperation = new gcm.Operation({
 Sending a message using a notification key is nearly identical to sending a message with a registration ID array. However, rather than using `Sender`, you must use `UserNotificationSender`.
 ```js
 // Create a message
-var message = new gcm.Message({data: {...}});
+var message = new fcm.Message({data: {...}});
 // Initiate a UserNotificationSender
-var userSender  = new gcm.UserNotificationSender('insert Google Server API Key here');
+var userSender  = new fcm.UserNotificationSender('insert Firebase Messaging Token here');
     
 userSender.send(message, 'yournotificationkey', function(err, results) {
   if (err) console.error(err);
@@ -164,11 +160,11 @@ userSender.send(message, 'yournotificationkey', function(err, results) {
 ```
 
 ### Debug
-To enable debug mode (print requests and responses to and from GCM),
+To enable debug mode (print requests and responses to and from FCM),
 set the `DEBUG` environment flag when running your app (assuming you use `node app.js` to run your app):
 
 ```bash
-DEBUG=yodel-gcm node app.js
+DEBUG=spire-fcm node app.js
 ```
 
 ## Contributors
