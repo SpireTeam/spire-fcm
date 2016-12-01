@@ -112,7 +112,7 @@ describe('UNIT SenderBase', function () {
       expect(body[Constants.PARAM_COLLAPSE_KEY]).to.equal(mess.collapseKey);
       expect(body[Constants.PARAM_TIME_TO_LIVE]).to.equal(mess.timeToLive);
       expect(body[Constants.PARAM_DRY_RUN]).to.equal(mess.dryRun);
-      expect(body[Constants.PARAM_PAYLOAD_KEY]).to.deep.equal(mess.data);
+      expect(body[Constants.PARAM_DATA_PAYLOAD_KEY]).to.deep.equal(mess.data);
     });
 
     it('should set registration ID body parameter if the recipient contains the registrationIds attribute', function() {

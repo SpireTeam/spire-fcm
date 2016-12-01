@@ -4,4 +4,4 @@
  * MIT Licensed
  */
  
-module.exports = require('./lib/node-gcm');
+module.exports = require('./lib/spire-fcm');
