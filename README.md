@@ -187,6 +187,7 @@ DEBUG=spire-fcm node app.js
  * [Paul Bininda](https://github.com/pbininda)
  * [Niels Roesen Abildgaard](https://github.com/hypesystem)
  * [Brian Bowden](https://github.com/brianbowden)
+ * [David Hunt](https://github.com/davidpaulhunt)
 
 ## License 
 
