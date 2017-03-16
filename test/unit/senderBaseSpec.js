@@ -149,31 +149,34 @@ describe('UNIT SenderBase', function () {
       expect(callback.args[0][0]).to.equal('response is null');
     });
 
-    it('should return the status code as an error if returned a 500', function () {
+    it('should return an error with code 500 if returned a 500', function () {
       var callback = sinon.spy(),
           senderBase = new SenderBase('myKey');
       setArgs(null, { statusCode: 500 }, {});
       senderBase.sendBaseNoRetry({ data: {} }, testRecipient, callback);
       expect(callback.calledOnce).to.be.ok;
-      expect(callback.args[0][0]).to.equal(500);
+      expect(callback.args[0][0] instanceof Error).to.equal(true);
+      expect(callback.args[0][0].code).to.equal(500);
     });
 
-    it('should return the status code as an error if returned a 401', function () {
+    it('should return an error with code 401 if returned a 401', function () {
       var callback = sinon.spy(),
           senderBase = new SenderBase('myKey');
       setArgs(null, { statusCode: 401 }, {});
       senderBase.sendBaseNoRetry({ data: {} }, testRecipient, callback);
       expect(callback.calledOnce).to.be.ok;
-      expect(callback.args[0][0]).to.equal(401);
+      expect(callback.args[0][0] instanceof Error).to.equal(true);
+      expect(callback.args[0][0].code).to.equal(401);
     });
 
-    it('should return the status code as an error if returned a 400', function () {
+    it('should return an error with code 400 if returned a 400', function () {
       var callback = sinon.spy(),
           senderBase = new SenderBase('myKey');
       setArgs(null, { statusCode: 400 }, {});
       senderBase.sendBaseNoRetry({ data: {} }, testRecipient, callback);
       expect(callback.calledOnce).to.be.ok;
-      expect(callback.args[0][0]).to.equal(400);
+      expect(callback.args[0][0] instanceof Error).to.equal(true);
+      expect(callback.args[0][0].code).to.equal(400);
     });
 
     it('should pass an error into the callback if resBody cannot be parsed', function () {
@@ -182,7 +185,7 @@ describe('UNIT SenderBase', function () {
       setArgs(null, { statusCode: 200 }, "non-JSON string.");
       senderBase.sendBaseNoRetry({ data: {} }, testRecipient, callback);
       expect(callback.calledOnce).to.be.ok;
-      expect(callback.args[0][0]).to.be.a('string');
+      expect(callback.args[0][0] instanceof Error).to.equal(true);
     });
 
     it('should pass in parsed resBody into callback on success', function () {
