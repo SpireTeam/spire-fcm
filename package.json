@@ -106,7 +106,7 @@
     "url": "http://github.com/SpireTeam/spire-fcm.git",
     "web": "http://github.com/SpireTeam/spire-fcm"
   },
-  "keywords": [ 
+  "keywords": [
     "google",
     "firebase",
     "cloud",
@@ -123,6 +123,7 @@
     "test": "./node_modules/.bin/mocha -R spec test/**/*Spec.js"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "debug": "^0.8.1",
     "request": "^2.27.0"
   },
