@@ -1,30 +1,22 @@
-"use strict";
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai'),
-    expect = chai.expect,
-    sinon = require('sinon'),
-    Sender = require('../../lib/sender'),
-    Constants = require('../../lib/constants');
+const Sender = require('../../lib/Sender');
+const Promise = require('bluebird');
 
-describe('UNIT Sender', function () {
+describe('UNIT Sender', () => {
   // Use object to set arguments passed into callback
-  var args = {};
+  const args = {};
 
-  describe('constructor', function () {
-    it('should call new on constructor if user does not', function () {
-      var sender = Sender();
-      expect(sender).to.not.be.undefined;
-      expect(sender).to.be.instanceOf(Sender);
-    });
-
-    it('should create a Sender with key and options passed in', function () {
-      var options = {
+  describe('constructor', () => {
+    it('should create a Sender with key and options passed in', () => {
+      const options = {
         proxy: 'http://myproxy.com',
         maxSockets: 100,
         timeout: 100
       };
-      var key = 'myAPIKey', 
-          sender = new Sender(key, options);
+      const key = 'myAPIKey';
+      const sender = new Sender(key, options);
       expect(sender).to.be.instanceOf(Sender);
       expect(sender.key).to.equal(key);
       expect(sender.options).to.deep.equal(options);
@@ -33,82 +25,63 @@ describe('UNIT Sender', function () {
     it.skip('should do something if not passed a valid key');
   });
 
-  describe('sendNoRetry()', function () {
-    var restore = {};
-    // Set arguments passed in request proxy
-    function setArgs(err, res, resBody) {
-      args = {
-        err: err,
-        res: res,
-        resBody: resBody
-      };
-    };
+  describe('sendNoRetry()', () => {
+    const restore = {};
 
-    before( function () {
+    before(() => {
       restore.sendBaseNoRetry = Sender.prototype.sendBaseNoRetry;
-      Sender.prototype.sendBaseNoRetry = function (message, recipient, callback) {
-        console.log('Firing send');
-        args.message = message;
-        args.recipient = recipient;
-        callback( args.err, args.result );
-      };
+      Sender.prototype.sendBaseNoRetry = (message, recipient) =>
+        Promise.resolve({
+          message, recipient,
+        });
     });
 
-    after( function () {
+    after(() => {
       Sender.prototype.sendBaseNoRetry = restore.sendBaseNoRetry;
     });
 
-    it('should pass a message, recipient with regIDs, and callback to sendBaseNoRetry', function() {
-      var callback = sinon.spy(),
-          recipient = { registrationIds: [1, 2, 3] },
-          message = "hello",
-          sender = new Sender('myKey');
+    it('should pass a message, recipient with tokens, and callback to sendBaseNoRetry', () => {
+      const recipient = { tokens: [1, 2, 3] };
+      const message = 'hello';
+      const sender = new Sender('myKey');
 
-      sender.sendNoRetry(message, [1, 2, 3], callback);
-      expect(callback.calledOnce).to.be.true;
-      expect(args.message).to.equal.message;
-      expect(args.recipient).to.equal.recipient;
+      sender.sendNoRetry(message, recipient)
+      .then(({ message: rMessage, recipient: rRecipient }) => {
+        expect(rMessage).to.equal.message;
+        expect(rRecipient).to.equal.recipient;
+      });
     });
     
   });
 
-  describe('send()', function () {
-    var restore = {};
-    // Set args passed into sendNoRetry
-    function setArgs(err, result) {
-      args = {
-        err: err,
-        result: result,
-        tries: 0
-      };
-    };
+  describe('send()', () => {
+    const restore = {};
 
-    before( function () {
+    before(() => {
       restore.sendBase = Sender.prototype.sendBase;
-      Sender.prototype.sendBase = function (message, recipient, retryCount, callback) {
-        console.log('Firing send');
-        args.message = message;
-        args.recipient = recipient;
-        args.retryCount = retryCount;
-        callback( args.err, args.result );
-      };
+      Sender.prototype.sendBase = (message, recipient, retryCount) =>
+        Promise.resolve({
+          message, recipient, retryCount,
+        });
     });
 
-    after( function () {
+    after(() => {
       Sender.prototype.sendBase = restore.sendBase;
     });
 
-    it('should pass a message, recipient with regDs, retry count, and callback to sendBase', function() {
-      var callback = sinon.spy(),
-          recipient = { registrationIds: [1, 2, 3] },
-          message = "hello",
-          sender = new Sender('myKey');
+    it('should pass a message, recipient with tokens, retry count, and callback to sendBase', () => {
+      const recipient = { tokens: [1, 2, 3] };
+      const message = 'hello';
+      const sender = new Sender('myKey');
 
-      sender.sendBase(message, [1, 2, 3], 1, callback);
-      expect(callback.calledOnce).to.be.true;
-      expect(args.message).to.equal.message;
-      expect(args.recipient).to.equal.recipient;
-      expect(args.retryCount).to.equal(1);
+      sender.sendBase(message, [1, 2, 3], 1)
+      .then(({
+        message: rMessage, recipient: rRecipient, retryCount,
+      }) => {
+        expect(rMessage).to.equal.message;
+        expect(rRecipient).to.equal.recipient;
+        expect(retryCount).to.equal(1);
+      });
     });
   });
 
