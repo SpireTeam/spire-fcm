@@ -168,6 +168,13 @@ new fcm.Message(options)
 new fcm.OperationRunner(FCM_SENDER_ID, FCM_SERVER_KEY)
   FCM_SENDER_ID: String required
   FCM_SERVER_KEY: String required
+
+
+const runner = new fcm.OperationRunner(FCM_SENDER_ID, FCM_SERVER_KEY)
+
+
+runner.performOperation(operation)
+  operation: fcm.Operation required
 ```
 
 ### fcm.Operation

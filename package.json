@@ -1,7 +1,7 @@
 {
   "name": "spire-fcm",
   "description": "Firebase Cloud Messaging on Node with User Notifications",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "author": "Brian Bowden <brian@spire.me>",
   "contributors": [
     {
