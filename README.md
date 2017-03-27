@@ -1,168 +1,194 @@
 # spire-fcm
 
-spire-fcm is a Node.JS module for Firebase Cloud Messaging based on yodel-gcm, a fork of node-gcm.
+spire-fcm is an asynchronous Node.JS module for Firebase Cloud Messaging based on [yodel-gcm](https://github.com/SpireTeam/spire-fcm), a fork of [node-gcm](https://github.com/ToothlessGear/node-gcm).
 
 ## Installation
 ```bash
 $ npm install spire-fcm
+# or
+$ yarn add spire-fcm
 ```
 
 ## Usage
 
-### Standard Push Notifications
+### Push Notification
 
 ```js
-var fcm = require('spire-fcm');
+const fcm = require('spire-fcm');
 
-// Create a message
-// ... with default values
-var message = new fcm.Message();
+const sender = new fcm.UserNotificationSender(process.env.FCM_SERVER_KEY);
 
-// ... or some given values
-var message = new fcm.Message({
-	collapseKey: 'demo',
-	timeToLive: 3,
-	data: {
-		key1: 'message1',
-		key2: 'message2'
-	}
+// A data message
+const message = new fcm.Message({
+  data: {
+    key1: 'This is a key value',
+    key2: 'This is also a key value',
+  },
+  // can include message options
+  restrictedPackageName: 'com.example.android',
+  collapseKey: 'demo',
 });
 
-// Change the message data
-// ... as key-value
-message.addData('key1','message1');
-message.addData('key2','message2');
-
-// ... or as a data object (overwrites previous data object)
-message.addData({
-	key1: 'message1',
-	key2: 'message2'
+// A notification message
+const message = new fcm.Message({
+  notification: {
+    body: 'This is a push notification',
+    title: 'Demo Push Notification',
+  },
+  // can include message options
+  restrictedPackageName: 'com.example.android',
+  collapseKey: 'demo',
 });
 
-// Change the message variables
-message.collapseKey = 'demo';
-message.timeToLive = 3;
-message.dryRun = true;
 
-// Set up the sender with you API key
-var sender = new fcm.Sender('insert Firebase Messaging Token here');
+// send to one or more fcm registration ids
+sender.send(message, {
+  tokens: ['fcm-registration-example-1', 'fcm-registration-example-2'],
+})
+.then(handleResponse);
 
-// Add the registration IDs of the devices you want to send to
-var registrationIds = [];
-registrationIds.push('regId1');
-registrationIds.push('regId2');
+// send to a device group
+sender.send(message, {
+  notificationKey: 'fcm-device-group-key',
+  notificationKeyName: 'example-fcm-device-key-name',
+})
+.then(handleResponse);
 
-// Send the message
-// ... trying only once
-sender.sendNoRetry(message, registrationIds, function(err, result) {
-  if(err) console.error(err);
-  else    console.log(result);
-});
-
-// ... or retrying
-sender.send(message, registrationIds, function (err, result) {
-  if(err) console.error(err);
-  else    console.log(result);
-});
-
-// ... or retrying a specific number of times (10)
-sender.send(message, registrationIds, 10, function (err, result) {
-  if(err) console.error(err);
-  else    console.log(result);
-});
+/*
+ * An example response
+ */
+{ "multicast_id": 108,
+  "success": 1,
+  "failure": 0,
+  "canonical_ids": 0,
+  "results": [
+    { "message_id": "1:08" }
+  ]
+}
 ```
 
-### User Notifications
+For more information on FCM message types, see [here](https://firebase.google.com/docs/cloud-messaging/concept-options#notifications_and_data_messages), or the response itself, see [here](https://firebase.google.com/docs/cloud-messaging/send-message).
 
-User notifications were initially introduced at Google I/O 2013 and became available to all developers in late 2014. At its core, user notifications provide developers a way to associate multiple devices to a single key (often associated with an individual app user). This adds a layer of notification key management but potentially removes the burden of maintaining a local list of all registration IDs for a particular user. Using notification keys also opens up the possibility of implementing upstream messaging. Further explanation can be found within the [Official GCM User Notification docs](https://developer.android.com/google/gcm/notifications.html). If you are new to user notifications, it is highly recommended that you read this [guide for implementing User Notifications](https://medium.com/@Bicx/adventures-in-android-user-notifications-e6568871d9be) which explains some key points unmentioned in the official documentation.
+### Device Groups
 
-#### Performing Notification Key Operations
+Device groups allow you notify 2+ related FCM registration tokens at one time.
 
 ```js
-var fcm = require('spire-fcm');
+/*
+ * Create a new operation runner. It should be used throughout.
+ */
+const runner = new fcm.OperationRunner(
+  process.env.FCM_SENDER_ID,
+  process.env.FCM_SERVER_KEY);
 
-// Create an operation runner for performing notification key operations
-var opRunner = new gcm.OperationRunner(
-  'insert Sender ID here', 
-  'insert Firebase Messaging Token here'
-  );
 
-// Define a 'create' operation for creating a notification key
-var createOperation = new fcm.Operation({
+/*
+ * Create a new operation for each request - "create", "add", "remove"
+ */
+
+// Create a new device group
+const operation = new fcm.Operation({
   operationType: 'create',
-  notificationKeyName: 'appUser-Chris',
-  registrationTokens: ['regId1', 'regId2']
+  tokens: ['fcm-registration-example-1'],
+  notificationKeyName: 'example-fcm-device-key-name', // unique identifier across your device groups
 });
 
-// Run the 'create' operation
-opRunner.performOperation(createOperation, function(err, result) {
-  if (err) console.error(err);
-  if (result.notification_key) {
-    // Store the notification key for later use. 
-    // Each successful operation returns a notification_key, and
-    // it is recommended that the stored notification key be updated
-    // with the returned value.
-  } else {
-    console.error('Did not receive notification key');
-  }
-});
-
-```
-#### Operation Types
-
-**Create**: Creates a new notification key with provided registration tokens
-```js
-var createOperation = new fcm.Operation({
-  operationType: 'create',
-  notificationKeyName: 'appUser-Chris',
-  registrationTokens: ['regId1', 'regId2']
-});
-```
-
-**Add**: Adds new registration tokens to an existing notification key
-```js
-// Set recreateKeyIfMissing to true if you want to automatically retry as a
-// create operation if FCM has deleted your original notification key.
-var addOperation = new fcm.Operation({
+// Add additional tokens to an existing device group
+const operation = new fcm.Operation({
   operationType: 'add',
-  notificationKeyName: 'appUser-Chris',
-  notificationKey: 'yourlongnotificationkeystring',
-  registrationIds: ['regId2', 'regId3'],
-  recreateKeyIfMissing: true
+  tokens: ['fcm-registration-example-2'],
+  notificationKey: 'fcm-device-group-key', // obtained through "create" operation
+  notificationKeyName: 'example-fcm-device-key-name',
 });
-```
 
-**Remove**: Removes registration tokens from an existing notification key
-```js
-// A notification key will be automatically deleted if all registration tokens are removed.
-var addOperation = new fcm.Operation({
+// Remove a token from an existing device group
+const operation = new fcm.Operation({
   operationType: 'remove',
-  notificationKeyName: 'appUser-Chris',
-  notificationKey: 'yournotificationkey',
-  registrationIds: ['regId3']
+  tokens: ['fcm-registration-example-1'],
+  notificationKey: 'fcm-device-group-key',
+  notificationKeyName: 'example-fcm-device-key-name',
 });
+
+// Perform the newly created operation
+runner.performOperation(operation).then(handleResponse);
 ```
 
-#### Sending a Message via Notification Key
-Sending a message using a notification key is nearly identical to sending a message with a registration ID array. However, rather than using `Sender`, you must use `UserNotificationSender`.
+You can find more information on device group management [here](https://firebase.google.com/docs/cloud-messaging/ios/device-group).
+
+## API
+
+_The bare bones_
+
+### fcm.UserNotificationSender
+
 ```js
-// Create a message
-var message = new fcm.Message({data: {...}});
-// Initiate a UserNotificationSender
-var userSender  = new fcm.UserNotificationSender('insert Firebase Messaging Token here');
-    
-userSender.send(message, 'yournotificationkey', function(err, results) {
-  if (err) console.error(err);
-  // Do something upon successful operation
-});
+new fcm.UserNotificationSender(FCM_SERVER_KEY)
+  FCM_SERVER_KEY: String required
+
+
+const sender = new fcm.UserNotificationSender(FCM_SERVER_KEY)
+
+
+sender.send(message, recipient, retries)
+  message: fcm.Message required
+  recipient: Object default={}
+    // either tokens or notificationKey is required
+    tokens: Array
+    notificationKey: String
+  retries: Number default=5
+
+
+sender.sendNoRetry(message, recipient)
+  message: fcm.Message required
+  recipient: Object default={}
+    // either tokens or notificationKey is required
+    tokens: Array
+    notificationKey: String
 ```
 
-### Debug
-To enable debug mode (print requests and responses to and from FCM),
-set the `DEBUG` environment flag when running your app (assuming you use `node app.js` to run your app):
+### fcm.Message
 
-```bash
-DEBUG=spire-fcm node app.js
+```js
+new fcm.Message(options)
+  options: Object
+    // either notification or data is required
+    notification: Object
+    data: Object
+    collapseKey: String
+    timeToLive: Number
+    dryRun: Boolean
+    priority: String
+    contentAvailable: Boolean
+    restrictedPackageName: String
+```
+
+### fcm.OperationRunner
+
+```js
+new fcm.OperationRunner(FCM_SENDER_ID, FCM_SERVER_KEY)
+  FCM_SENDER_ID: String required
+  FCM_SERVER_KEY: String required
+```
+
+### fcm.Operation
+
+```js
+new fcm.Operation(options)
+  options: Object required
+    operationType: String required ["create", "add", "remove"]
+    tokens: Array required
+    // notificationKey is required except for "create"
+    notificationKey: String
+    notificationKeyName: String required
+```
+
+### fcm.SpireError
+```js
+// A custom, catchable error, for example:
+sender.send(message, recipient)
+.then(handleResponse)
+.catch(fcm.SpireError, handleFCMErrors)
+.catch(handleOtherErrors);
 ```
 
 ## Contributors
@@ -173,7 +199,7 @@ DEBUG=spire-fcm node app.js
 
 (The MIT License)
 
-Copyright (c) 2013 Marcus Farkas &lt;toothlessgear@finitebox.com&gt;
+Copyright (c) 2017 Spire Labs, Inc
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
