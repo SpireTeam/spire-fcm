@@ -1,100 +1,16 @@
 {
   "name": "spire-fcm",
   "description": "Firebase Cloud Messaging on Node with User Notifications",
-  "version": "1.0.3",
+  "version": "2.0.4",
   "author": "Brian Bowden <brian@spire.me>",
   "contributors": [
     {
-      "name": "Marcus Farkas",
-      "email": "toothlessgear@finitebox.com"
-    },
-    {
-      "name": "monkbroc",
-      "email": "jvanier@gmail.com"
-    },
-    {
-      "name": "zlyinfinite",
-      "email": ""
-    },
-    {
-      "name": "Yann Biancheri",
-      "email": "yann.biancheri@gmail.com"
-    },
-    {
-      "name": "Hamid Palo",
-      "email": "hamid@fogcreek.com"
-    },
-    {
-      "name": "Dotan J. Nahum",
-      "email": "jondotan@gmail.com"
-    },
-    {
-      "name": "Max Rabin",
-      "email": "rabin.max@gmail.com"
-    },
-    {
-      "name": "Olivier Poitrey",
-      "email": "rs@dailymotion.com"
-    },
-    {
-      "name": "George Miroshnykov",
-      "email": "george.miroshnykov@gmail.com"
-    },
-    {
-      "name": "Alejandro Garcia Gil",
-      "email": "alejandro@ideaknow.com"
-    },
-    {
-      "name": "Ismael Gorissen",
-      "email": "ismael.gorissen@gmail.com"
-    },
-    {
-      "name": "Joris Verbogt",
-      "email": "joris@notifica.re"
-    },
-    {
-      "name": "goelvivek",
-      "email": "goelvivek2011@gmail.com"
-    },
-    {
-      "name": "Lars Jacob",
-      "email": "lars@jaclar.net"
-    },
-    {
-      "name": "Roman Iakovlev",
-      "email": "roman.iakovlev@here.com"
-    },
-    {
-      "name": "Roman Skvazh",
-      "email": "roman.skvazh@gmail.com"
-    },
-    {
-      "name": "Jeremy Goldstein",
-      "email": "jg-dev@live.com"
-    },
-    {
-      "name": "Adam Patacchiola",
-      "email": "adam@2fours.com"
-    },
-    {
-      "name": "Ivan Longin",
-      "email": "ivan.longin@infobip.com"
-    },
-    {
-      "name": "Paul Bininda",
-      "email": "paul@bininda.com"
-    },
-    {
-      "name": "Matt Merkes",
-      "email": "matt.merkes@gmail.com"
-    },
-    {
-      "name": "Niels Roesen Abildgaard",
-      "email": "niels.abildgaard@gmail.com"
-    },
-    {
       "name": "Brian Bowden",
       "email": "brian@spire.me"
+    },
+    {
+      "name": "David Hunt",
+      "email": "david@spire.me"
     }
   ],
   "repository": {
@@ -102,7 +18,7 @@
     "url": "http://github.com/SpireTeam/spire-fcm.git",
     "web": "http://github.com/SpireTeam/spire-fcm"
   },
-  "keywords": [ 
+  "keywords": [
     "google",
     "firebase",
     "cloud",
@@ -119,6 +35,7 @@
     "test": "./node_modules/.bin/mocha -R spec test/**/*Spec.js"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "debug": "^0.8.1",
     "request": "^2.27.0"
   },
@@ -133,6 +50,6 @@
   },
   "optionalDependencies": {},
   "engines": {
-    "node": ">= 0.10.0"
+    "node": "6.x"
   }
 }
