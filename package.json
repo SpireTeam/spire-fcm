@@ -37,7 +37,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "debug": "^0.8.1",
-    "request": "^2.27.0"
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
@@ -46,7 +46,8 @@
     "grunt-simple-mocha": "^0.4.0",
     "mocha": "^1.21.0",
     "proxyquire": "^1.0.1",
-    "sinon": "^1.10.3"
+    "sinon": "^1.10.3",
+    "snyk": "^1.30.0"
   },
   "optionalDependencies": {},
   "engines": {
